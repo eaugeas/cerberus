@@ -1,0 +1,27 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Add golang-go repository
+      run: sudo add-apt-repository ppa:longsleep/golang-backports && sudo apt update
+
+    - name: Install dependencies
+      run: sudo apt install build-essential libpcre3 libpcre3-dev lua5.2 golang-go -y
+
+    - name: Install test dependencies
+      run: cd test && go mod download && cd ../
+
+    - name: Build cerberus
+      run: make
+
+    - name: Run unittests
+      run: make unittests
